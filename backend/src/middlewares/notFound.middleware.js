@@ -1,0 +1,7 @@
+function notFoundMiddleware(req, res) {
+    res.status(404).json({
+        mensaje: `Ruta no encontrada: ${req.originalUrl}`
+    });
+}
+
+module.exports = notFoundMiddleware;
