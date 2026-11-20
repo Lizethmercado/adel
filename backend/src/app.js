@@ -1,4 +1,7 @@
 const express = require('express');
+const cors = require('cors');
+
+const config = require('./config/env');
 
 const app = express();
 
@@ -6,6 +9,9 @@ const app = express();
 const indexRoutes = require('./routes/index.routes');
 const notFoundMiddleware = require('./middlewares/notFound.middleware');
 const errorMiddleware = require('./middlewares/error.middleware');
+
+// Permitir solicitudes del frontend (solo los orígenes configurados)
+app.use(cors({ origin: config.corsOrigins }));
 
 // Procesar solicitudes con datos JSON
 app.use(express.json());
