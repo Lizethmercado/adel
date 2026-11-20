@@ -1,0 +1,64 @@
+import { Link, NavLink, Route, Routes } from 'react-router'
+import HealthPage from './pages/HealthPage.jsx'
+
+function HomePage() {
+  return (
+    <section className="hero" aria-labelledby="home-title">
+      <div className="hero-content">
+        <h1 id="home-title">Compras e inventario</h1>
+        <p>
+          ADEL ayuda a los pequeños negocios de comidas rápidas a gestionar
+          sus compras y controlar su inventario.
+        </p>
+        <Link className="action" to="/estado">
+          Consultar estado del sistema
+          <span aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </section>
+  )
+}
+
+export default function App() {
+  return (
+    <>
+      <header className="site-header">
+        <div className="shell header-inner">
+          <Link className="brand" to="/" aria-label="ADEL, inicio">
+            <span className="brand-mark" aria-hidden="true">A</span>
+            ADEL
+          </Link>
+
+          <nav className="navigation" aria-label="Navegación principal">
+            <NavLink to="/" end>Inicio</NavLink>
+            <NavLink to="/estado">Estado del sistema</NavLink>
+          </nav>
+        </div>
+      </header>
+
+      <main className="shell main-content">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/estado"
+            element={
+              <div className="status-page">
+                <Link className="back-link" to="/">← Volver al inicio</Link>
+                <HealthPage />
+              </div>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <section className="surface">
+                <h1>Página no encontrada</h1>
+                <Link className="action" to="/">Volver al inicio</Link>
+              </section>
+            }
+          />
+        </Routes>
+      </main>
+    </>
+  )
+}
