@@ -1,5 +1,6 @@
 import { Link, NavLink, Route, Routes } from 'react-router'
 import HealthPage from './pages/HealthPage.jsx'
+import RegisterPage from './pages/RegisterPage.jsx'
 
 function HomePage() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
           <nav className="navigation" aria-label="Navegación principal">
             <NavLink to="/" end>Inicio</NavLink>
             <NavLink to="/estado">Estado del sistema</NavLink>
+            <NavLink to="/registro">Registro</NavLink>
           </nav>
         </div>
       </header>
@@ -48,6 +50,7 @@ export default function App() {
               </div>
             }
           />
+          <Route path="/registro" element={<RegisterPage />} />
           <Route
             path="*"
             element={
