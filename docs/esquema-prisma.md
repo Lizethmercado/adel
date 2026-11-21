@@ -78,3 +78,7 @@ El nombre de la migración usa la fecha en hora UTC.
 - No se usa `prisma.config.ts`: el esquema lee `DATABASE_URL` directamente del `.env`, lo que simplifica la configuración del equipo.
 - Las migraciones se versionan en el repositorio (`backend/prisma/migrations`), incluido `migration_lock.toml`.
 - Se fija la serie 6 de Prisma para que todo el equipo use la misma versión y la instalación sea reproducible. No se actualiza a la serie 8, que cambia el flujo de configuración.
+
+## Nota sobre Compra y DetalleCompra
+
+La relación Compra–DetalleCompra permite cero o más detalles en el esquema. El mínimo de un detalle por compra se valida al registrar la compra (T34), dentro de la misma transacción.
