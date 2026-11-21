@@ -28,6 +28,7 @@ Plataforma web con analítica de datos e inteligencia artificial generativa para
 - [Convenciones de ramas y commits](docs/convenciones.md)
 - [Modelo entidad–relación](docs/modelo-er.md)
 - [Variables de entorno y CORS](docs/variables-entorno.md)
+- [Conexión a la base de datos](docs/conexion-bd.md)
 
 ## Estrategia de ramas (Gitflow)
 
