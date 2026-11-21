@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EstadoProveedor {
+  ACTIVO
+  INACTIVO
+}
+
+model Negocio {
+  id          Int         @id @default(autoincrement())
+  nombre      String
+  usuario     Usuario?
+  insumos     Insumo[]
+  proveedores Proveedor[]
+  compras     Compra[]
+}
+
+model Usuario {
+  id             Int     @id @default(autoincrement())
+  negocioId      Int     @unique
+  negocio        Negocio @relation(fields: [negocioId], references: [id])
+  nombreCompleto String
+  correo         String  @unique
+  contrasenaHash String
+}
+
+model Insumo {
+  id                Int             @id @default(autoincrement())
+  negocioId         Int
+  negocio           Negocio         @relation(fields: [negocioId], references: [id])
+  nombre            String
+  nombreNormalizado String
+  unidad            String
+  cantidadActual    Decimal         @db.Decimal(12, 3)
+  cantidadMinima    Decimal         @db.Decimal(12, 3)
+  perecedero        Boolean         @default(false)
+  detalles          DetalleCompra[]
+
+  @@unique([negocioId, nombreNormalizado])
+}
+
+model Proveedor {
+  id        Int             @id @default(autoincrement())
+  negocioId Int
+  negocio   Negocio         @relation(fields: [negocioId], references: [id])
+  nombre    String
+  telefono  String?
+  estado    EstadoProveedor @default(ACTIVO)
+  compras   Compra[]
+
+  @@index([negocioId])
+}
+
+model Compra {
+  id          Int             @id @default(autoincrement())
+  negocioId   Int
+  negocio     Negocio         @relation(fields: [negocioId], references: [id])
+  proveedorId Int
+  proveedor   Proveedor       @relation(fields: [proveedorId], references: [id], onDelete: Restrict)
+  fecha       DateTime        @db.Date
+  total       Decimal         @db.Decimal(14, 2)
+  creadoEn    DateTime        @default(now())
+  detalles    DetalleCompra[]
+
+  @@index([negocioId, fecha])
+  @@index([proveedorId])
+}
+
+model DetalleCompra {
+  id             Int     @id @default(autoincrement())
+  compraId       Int
+  compra         Compra  @relation(fields: [compraId], references: [id], onDelete: Cascade)
+  insumoId       Int
+  insumo         Insumo  @relation(fields: [insumoId], references: [id], onDelete: Restrict)
+  cantidad       Decimal @db.Decimal(12, 3)
+  precioUnitario Decimal @db.Decimal(14, 2)
+
+  @@index([compraId])
+  @@index([insumoId])
+}
