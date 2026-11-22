@@ -9,7 +9,6 @@ let prisma;
 let negocioA;
 let negocioB;
 let tokenA;
-let tokenB;
 
 async function crearNegocioConUsuario(etiqueta) {
   return prisma.negocio.create({
@@ -40,6 +39,26 @@ async function crearInsumo(negocioId, nombre, cantidadActual = 10, cantidadMinim
   });
 }
 
+function crearProveedor(negocioId, nombre, estado = 'ACTIVO') {
+  return prisma.proveedor.create({ data: { negocioId, nombre, estado } });
+}
+
+function contarCompras(negocioId) {
+  return prisma.compra.count({ where: { negocioId } });
+}
+
+async function cantidadDe(insumoId) {
+  const insumo = await prisma.insumo.findUnique({ where: { id: insumoId } });
+  return Number(insumo.cantidadActual);
+}
+
+function comprar(token, cuerpo) {
+  return request(app)
+    .post(ruta)
+    .set('Authorization', `Bearer ${token}`)
+    .send(cuerpo);
+}
+
 beforeAll(async () => {
   const url = process.env.DATABASE_URL;
 
@@ -54,7 +73,6 @@ beforeAll(async () => {
   negocioA = await crearNegocioConUsuario('A');
   negocioB = await crearNegocioConUsuario('B');
   tokenA = crearToken(negocioA.usuario.id);
-  tokenB = crearToken(negocioB.usuario.id);
 });
 
 afterAll(async () => {
@@ -81,24 +99,19 @@ afterAll(async () => {
 });
 
 describe('Compras (HU-10)', () => {
-  test('HU-10 escenarios 1 y 2: registra la compra con su total y suma las cantidades al inventario en una transacción', async () => {
-    const proveedor = await prisma.proveedor.create({
-      data: { negocioId: negocioA.id, nombre: 'Distribuidora El Sol' },
-    });
-    const harina = await crearInsumo(negocioA.id, 'Harina de trigo', 5, 2);
-    const queso = await crearInsumo(negocioA.id, 'Queso costeño', 3.5, 1);
+  test('HU-10 escenario 1: registra la compra con su total (2 x 4.000 + 1 x 3.000 = 11.000)', async () => {
+    const proveedor = await crearProveedor(negocioA.id, 'Distribuidora El Sol');
+    const harina = await crearInsumo(negocioA.id, 'Harina de trigo');
+    const queso = await crearInsumo(negocioA.id, 'Queso costeño');
 
-    const { body } = await request(app)
-      .post(ruta)
-      .set('Authorization', `Bearer ${tokenA}`)
-      .send({
-        proveedorId: proveedor.id,
-        fecha: '2026-11-22',
-        detalles: [
-          { insumoId: harina.id, cantidad: 10, precioUnitario: 3200 },
-          { insumoId: queso.id, cantidad: 2.5, precioUnitario: 14000 },
-        ],
-      })
+    const { body } = await comprar(tokenA, {
+      proveedorId: proveedor.id,
+      fecha: '2026-11-22',
+      detalles: [
+        { insumoId: harina.id, cantidad: 2, precioUnitario: 4000 },
+        { insumoId: queso.id, cantidad: 1, precioUnitario: 3000 },
+      ],
+    })
       .expect(201)
       .expect('Content-Type', /json/);
 
@@ -107,149 +120,156 @@ describe('Compras (HU-10)', () => {
       id: expect.any(Number),
       proveedorId: proveedor.id,
     });
-    expect(Number(body.compra.total)).toBe(67000);
+    expect(Number(body.compra.total)).toBe(11000);
     expect(body.compra.detalles).toHaveLength(2);
 
-    const harinaActualizada = await prisma.insumo.findUnique({
-      where: { id: harina.id },
+    const guardada = await prisma.compra.findUnique({
+      where: { id: body.compra.id },
+      include: { detalles: true },
     });
-    const quesoActualizado = await prisma.insumo.findUnique({
-      where: { id: queso.id },
-    });
-
-    expect(Number(harinaActualizada.cantidadActual)).toBe(15);
-    expect(Number(quesoActualizado.cantidadActual)).toBe(6);
+    expect(guardada.negocioId).toBe(negocioA.id);
+    expect(Number(guardada.total)).toBe(11000);
+    expect(guardada.detalles).toHaveLength(2);
   });
 
-  test('HU-10 escenario 3: rechaza datos inválidos o vacíos y no altera el inventario', async () => {
-    const proveedor = await prisma.proveedor.create({
-      data: { negocioId: negocioA.id, nombre: 'Proveedor Validación' },
-    });
+  test('HU-10 escenario 2: suma la cantidad comprada al inventario (5 + 10 = 15)', async () => {
+    const proveedor = await crearProveedor(negocioA.id, 'Proveedor Inventario');
+    const arroz = await crearInsumo(negocioA.id, 'Arroz', 5, 2);
+
+    await comprar(tokenA, {
+      proveedorId: proveedor.id,
+      detalles: [{ insumoId: arroz.id, cantidad: 10, precioUnitario: 4000 }],
+    }).expect(201);
+
+    expect(await cantidadDe(arroz.id)).toBe(15);
+  });
+
+  test('HU-10 escenario 3: rechaza cantidad o precio en cero o negativos y no modifica el inventario', async () => {
+    const proveedor = await crearProveedor(negocioA.id, 'Proveedor Validación');
     const azucar = await crearInsumo(negocioA.id, 'Azúcar', 8, 2);
+    const comprasAntes = await contarCompras(negocioA.id);
 
-    const comprasAntes = await prisma.compra.count({
-      where: { negocioId: negocioA.id },
-    });
+    const casos = [
+      { cantidad: 0, precioUnitario: 1000 },
+      { cantidad: -3, precioUnitario: 1000 },
+      { cantidad: 2, precioUnitario: 0 },
+      { cantidad: 2, precioUnitario: -500 },
+    ];
 
-    // Sin detalles
-    const resVacio = await request(app)
-      .post(ruta)
-      .set('Authorization', `Bearer ${tokenA}`)
-      .send({ proveedorId: proveedor.id, detalles: [] })
-      .expect(400)
-      .expect('Content-Type', /json/);
-
-    expect(resVacio.body.campos).toEqual(expect.arrayContaining(['detalles']));
-
-    // Cantidad y precio inválidos
-    const resInvalidos = await request(app)
-      .post(ruta)
-      .set('Authorization', `Bearer ${tokenA}`)
-      .send({
+    for (const caso of casos) {
+      const { body } = await comprar(tokenA, {
         proveedorId: proveedor.id,
-        detalles: [{ insumoId: azucar.id, cantidad: 0, precioUnitario: -500 }],
+        detalles: [{ insumoId: azucar.id, ...caso }],
       })
-      .expect(400)
-      .expect('Content-Type', /json/);
+        .expect(400)
+        .expect('Content-Type', /json/);
 
-    expect(resInvalidos.body.mensaje).toEqual(expect.any(String));
-    expect(Array.isArray(resInvalidos.body.campos)).toBe(true);
+      expect(body.mensaje).toEqual(expect.any(String));
+      expect(Array.isArray(body.campos)).toBe(true);
+    }
 
-    const comprasDespues = await prisma.compra.count({
-      where: { negocioId: negocioA.id },
-    });
-    const azucarIntacta = await prisma.insumo.findUnique({
-      where: { id: azucar.id },
-    });
-
-    expect(comprasDespues).toBe(comprasAntes);
-    expect(Number(azucarIntacta.cantidadActual)).toBe(8);
+    expect(await contarCompras(negocioA.id)).toBe(comprasAntes);
+    expect(await cantidadDe(azucar.id)).toBe(8);
   });
 
-  test('HU-10 escenario 4: rechaza un proveedor inactivo o de otro negocio y no altera el inventario', async () => {
-    const proveedorInactivo = await prisma.proveedor.create({
-      data: {
-        negocioId: negocioA.id,
-        nombre: 'Proveedor Inactivo',
-        estado: 'INACTIVO',
-      },
-    });
-    const proveedorAjeno = await prisma.proveedor.create({
-      data: {
-        negocioId: negocioB.id,
-        nombre: 'Proveedor Negocio B',
-        estado: 'ACTIVO',
-      },
-    });
-    const sal = await crearInsumo(negocioA.id, 'Sal refinada', 4, 1);
+  test('HU-10 escenario 3: rechaza una compra sin detalles y no registra ninguna compra', async () => {
+    const proveedor = await crearProveedor(negocioA.id, 'Proveedor Sin Detalles');
+    const comprasAntes = await contarCompras(negocioA.id);
 
-    const resInactivo = await request(app)
-      .post(ruta)
-      .set('Authorization', `Bearer ${tokenA}`)
-      .send({
-        proveedorId: proveedorInactivo.id,
-        detalles: [{ insumoId: sal.id, cantidad: 5, precioUnitario: 1200 }],
-      })
-      .expect(400)
-      .expect('Content-Type', /json/);
-
-    expect(resInactivo.body.campos).toEqual(expect.arrayContaining(['proveedorId']));
-
-    const resAjeno = await request(app)
-      .post(ruta)
-      .set('Authorization', `Bearer ${tokenA}`)
-      .send({
-        proveedorId: proveedorAjeno.id,
-        detalles: [{ insumoId: sal.id, cantidad: 5, precioUnitario: 1200 }],
-      })
-      .expect(400)
-      .expect('Content-Type', /json/);
-
-    expect(resAjeno.body.campos).toEqual(expect.arrayContaining(['proveedorId']));
-
-    const salIntacta = await prisma.insumo.findUnique({
-      where: { id: sal.id },
-    });
-    expect(Number(salIntacta.cantidadActual)).toBe(4);
-  });
-
-  test('HU-10 escenario 4: rechaza un insumo de otro negocio y no deja cambios parciales', async () => {
-    const proveedor = await prisma.proveedor.create({
-      data: { negocioId: negocioA.id, nombre: 'Proveedor Atomicidad' },
-    });
-    const insumoPropio = await crearInsumo(negocioA.id, 'Aceite vegetal', 6, 2);
-    const insumoAjeno = await crearInsumo(negocioB.id, 'Aceite Negocio B', 12, 2);
-
-    const { body } = await request(app)
-      .post(ruta)
-      .set('Authorization', `Bearer ${tokenA}`)
-      .send({
-        proveedorId: proveedor.id,
-        detalles: [
-          { insumoId: insumoPropio.id, cantidad: 4, precioUnitario: 9000 },
-          { insumoId: insumoAjeno.id, cantidad: 3, precioUnitario: 9000 },
-        ],
-      })
+    const { body } = await comprar(tokenA, {
+      proveedorId: proveedor.id,
+      detalles: [],
+    })
       .expect(400)
       .expect('Content-Type', /json/);
 
     expect(body.campos).toEqual(expect.arrayContaining(['detalles']));
+    expect(await contarCompras(negocioA.id)).toBe(comprasAntes);
+  });
 
-    const propioIntacto = await prisma.insumo.findUnique({
-      where: { id: insumoPropio.id },
-    });
-    const ajenoIntacto = await prisma.insumo.findUnique({
-      where: { id: insumoAjeno.id },
-    });
+  test('HU-10 escenario 3: rechaza una compra sin proveedorId con 400 y no modifica el inventario', async () => {
+    const aceite = await crearInsumo(negocioA.id, 'Aceite de cocina', 7, 2);
+    const comprasAntes = await contarCompras(negocioA.id);
 
-    expect(Number(propioIntacto.cantidadActual)).toBe(6);
-    expect(Number(ajenoIntacto.cantidadActual)).toBe(12);
+    const { body } = await comprar(tokenA, {
+      detalles: [{ insumoId: aceite.id, cantidad: 3, precioUnitario: 9000 }],
+    })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    expect(body.mensaje).toEqual(expect.any(String));
+    expect(body.campos).toEqual(expect.arrayContaining(['proveedorId']));
+    expect(await contarCompras(negocioA.id)).toBe(comprasAntes);
+    expect(await cantidadDe(aceite.id)).toBe(7);
+  });
+
+  test('HU-10 escenario 4a: rechaza un proveedor de otro negocio y no registra la compra', async () => {
+    const proveedorAjeno = await crearProveedor(negocioB.id, 'Proveedor Negocio B');
+    const sal = await crearInsumo(negocioA.id, 'Sal refinada', 4, 1);
+    const comprasAntes = await contarCompras(negocioA.id);
+
+    const { body } = await comprar(tokenA, {
+      proveedorId: proveedorAjeno.id,
+      detalles: [{ insumoId: sal.id, cantidad: 5, precioUnitario: 1200 }],
+    })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    expect(body.campos).toEqual(expect.arrayContaining(['proveedorId']));
+    expect(await contarCompras(negocioA.id)).toBe(comprasAntes);
+    expect(await cantidadDe(sal.id)).toBe(4);
+  });
+
+  test('HU-10 escenario 4b: rechaza un insumo de otro negocio y no deja cambios parciales', async () => {
+    const proveedor = await crearProveedor(negocioA.id, 'Proveedor Atomicidad');
+    const insumoPropio = await crearInsumo(negocioA.id, 'Aceite vegetal', 6, 2);
+    const insumoAjeno = await crearInsumo(negocioB.id, 'Aceite Negocio B', 12, 2);
+    const comprasAntes = await contarCompras(negocioA.id);
+
+    const { body } = await comprar(tokenA, {
+      proveedorId: proveedor.id,
+      detalles: [
+        { insumoId: insumoPropio.id, cantidad: 4, precioUnitario: 9000 },
+        { insumoId: insumoAjeno.id, cantidad: 3, precioUnitario: 9000 },
+      ],
+    })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    expect(body.campos).toEqual(expect.arrayContaining(['detalles']));
+    expect(await contarCompras(negocioA.id)).toBe(comprasAntes);
+    expect(await cantidadDe(insumoPropio.id)).toBe(6);
+    expect(await cantidadDe(insumoAjeno.id)).toBe(12);
+  });
+
+  test('HU-09 escenario 4 (aplicado a compras): rechaza un proveedor inactivo y no registra la compra', async () => {
+    const proveedorInactivo = await crearProveedor(
+      negocioA.id,
+      'Proveedor Inactivo',
+      'INACTIVO',
+    );
+    const harina = await crearInsumo(negocioA.id, 'Harina integral', 9, 2);
+    const comprasAntes = await contarCompras(negocioA.id);
+
+    const { body } = await comprar(tokenA, {
+      proveedorId: proveedorInactivo.id,
+      detalles: [{ insumoId: harina.id, cantidad: 5, precioUnitario: 3000 }],
+    })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    expect(body.campos).toEqual(expect.arrayContaining(['proveedorId']));
+    expect(await contarCompras(negocioA.id)).toBe(comprasAntes);
+    expect(await cantidadDe(harina.id)).toBe(9);
   });
 
   test('R-01: sin sesión se responde 401', async () => {
     await request(app)
       .post(ruta)
-      .send({ proveedorId: 1, detalles: [{ insumoId: 1, cantidad: 1, precioUnitario: 1000 }] })
+      .send({
+        proveedorId: 1,
+        detalles: [{ insumoId: 1, cantidad: 1, precioUnitario: 1000 }],
+      })
       .expect(401);
   });
 });
