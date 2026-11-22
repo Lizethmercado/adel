@@ -33,3 +33,28 @@ export async function registrarInsumo(token, datos) {
 
   return data;
 }
+export async function listarInsumos(token, signal) {
+  const respuesta = await fetch('/api/insumos', {
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    signal,
+  });
+
+  if (respuesta.status === 401) {
+    return null;
+  }
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudo cargar el inventario.');
+  }
+
+  const datos = await respuesta.json();
+
+  if (!Array.isArray(datos?.insumos)) {
+    throw new Error('El servidor devolvió un inventario inválido.');
+  }
+
+  return datos.insumos;
+}

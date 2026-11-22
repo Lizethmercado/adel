@@ -1,0 +1,138 @@
+.inventario-page {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.inventario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+  border-radius: 1.25rem;
+  background: radial-gradient(ellipse at top right, #28785a, transparent 70%),
+    var(--forest);
+  color: #fff;
+}
+
+.inventario-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.inventario-header p {
+  margin: 0.65rem 0 0;
+  color: var(--mint);
+  line-height: 1.5;
+}
+
+.inventario-header .action {
+  background: var(--mint);
+  color: var(--forest);
+}
+
+.inventario-header .action:hover:not(:disabled) {
+  background: #fff;
+}
+
+.inventario-header .action:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+.inventario-panel,
+.inventario-tabla-contenedor {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 14px 36px #103a320d;
+}
+
+.inventario-panel {
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.inventario-panel h2,
+.inventario-panel p {
+  margin: 0;
+}
+
+.inventario-panel h2 + p {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+.inventario-panel .action {
+  margin-top: 1rem;
+}
+
+.inventario-vacio {
+  text-align: center;
+}
+
+.inventario-tabla-contenedor {
+  overflow-x: auto;
+}
+
+.inventario-tabla {
+  width: 100%;
+  min-width: 39rem;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.inventario-tabla th,
+.inventario-tabla td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.inventario-tabla thead {
+  background: #edf6ef;
+  color: var(--forest);
+}
+
+.inventario-tabla tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.inventario-tabla td:nth-child(3),
+.inventario-tabla td:nth-child(4) {
+  font-variant-numeric: tabular-nums;
+}
+
+.inventario-fila--minimo {
+  background: #fffbeb;
+}
+
+.inventario-fila--bajo {
+  background: #fff5f3;
+}
+
+.inventario-estado {
+  display: inline-block;
+  padding: 0.3rem 0.65rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.inventario-estado--disponible {
+  background: var(--mint);
+  color: var(--forest);
+}
+
+.inventario-estado--minimo {
+  background: #fef0c7;
+  color: #713f12;
+}
+
+.inventario-estado--bajo {
+  background: #fee4e2;
+  color: #912018;
+}
