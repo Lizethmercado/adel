@@ -6,6 +6,7 @@ import BusinessPage from './pages/BusinessPage.jsx'
 import InsumosPage from './pages/InsumosPage.jsx'
 import InventarioPage from './pages/InventarioPage.jsx'
 import ProveedoresPage from './pages/ProveedoresPage.jsx'
+import ComprasPage from './pages/ComprasPage.jsx'
 
 function HomePage() {
   return (
@@ -44,6 +45,7 @@ export default function App() {
             <NavLink to="/insumos">Registrar insumos</NavLink>
             <NavLink to="/inventario">Inventario</NavLink>
             <NavLink to="/proveedores">Proveedores</NavLink>
+            <NavLink to="/compras">Compras</NavLink>
           </nav>
         </div>
       </header>
@@ -66,6 +68,7 @@ export default function App() {
           <Route path="/insumos" element={<InsumosPage />} />
           <Route path="/inventario" element={<InventarioPage />} />
           <Route path="/proveedores" element={<ProveedoresPage />} />
+          <Route path="/compras" element={<ComprasPage />} />
           <Route
             path="*"
             element={

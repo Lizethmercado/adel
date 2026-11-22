@@ -1,0 +1,253 @@
+﻿.compras-page {
+  display: grid;
+  gap: 1.5rem;
+  padding-block: 1.5rem 3rem;
+}
+
+.compras-header h1 {
+  margin: 0;
+  color: var(--forest);
+  font-size: clamp(1.7rem, 4vw, 2.2rem);
+}
+
+.compras-header p {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.compras-card {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(16 58 50 / 5%);
+}
+
+.compras-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.compra-field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.compra-field label {
+  color: var(--forest);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.compra-field input,
+.compra-field select {
+  width: 100%;
+  min-height: 2.8rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: #fff;
+  color: #15332e;
+  font: inherit;
+}
+
+.compra-field input:focus,
+.compra-field select:focus {
+  border-color: var(--green);
+  outline: 3px solid rgb(23 102 78 / 12%);
+}
+
+.compra-field small {
+  color: var(--muted);
+}
+
+.compras-detalles-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+
+.compras-detalles-header h2 {
+  margin: 0;
+  color: var(--forest);
+  font-size: 1.2rem;
+}
+
+.compras-detalles-header p {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.compra-add-button,
+.compra-remove-button {
+  min-height: 2.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.compra-add-button {
+  border: 1px solid var(--green);
+  background: #fff;
+  color: var(--green);
+}
+
+.compra-add-button:hover {
+  background: #edf8f0;
+}
+
+.compra-linea {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin: 0;
+  padding: 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  background: #fbfdfb;
+}
+
+.compra-linea legend {
+  padding-inline: 0.4rem;
+  color: var(--forest);
+  font-weight: 700;
+}
+
+.compra-linea-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(110px, 0.7fr) minmax(150px, 1fr);
+  gap: 1rem;
+  align-items: end;
+}
+
+.compra-linea-total {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.compra-linea-total strong {
+  color: var(--forest);
+}
+
+.compra-remove-button {
+  margin-top: 1rem;
+  border: 1px solid #e7bcbc;
+  background: #fff;
+  color: #a12e2e;
+}
+
+.compra-remove-button:hover {
+  background: #fff0f0;
+}
+
+.compras-feedback {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.65rem;
+  line-height: 1.5;
+}
+
+.compras-feedback.error {
+  border: 1px solid #f2c4c4;
+  background: #fff0f0;
+  color: #9c2929;
+}
+
+.compras-feedback.success {
+  border: 1px solid #b8dfc8;
+  background: #edfaf1;
+  color: #17643b;
+}
+
+.compras-empty {
+  grid-column: 1 / -1;
+  padding: 1.5rem 1rem;
+  border: 1px dashed var(--border);
+  border-radius: 0.7rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.compras-resumen {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.2rem;
+  border-radius: 0.8rem;
+  background: #f0f7f2;
+  color: var(--forest);
+}
+
+.compras-resumen strong {
+  font-size: 1.35rem;
+}
+
+.compras-submit {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.compras-submit button {
+  min-height: 2.8rem;
+  padding: 0.7rem 1.4rem;
+  border: 0;
+  border-radius: 0.65rem;
+  background: var(--green);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.compras-submit button:hover:not(:disabled) {
+  background: var(--forest);
+}
+
+.compras-submit button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (max-width: 700px) {
+  .compras-card {
+    padding: 1rem;
+  }
+
+  .compras-form {
+    grid-template-columns: 1fr;
+  }
+
+  .compras-detalles-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .compra-linea-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compra-linea-total {
+    grid-column: 1;
+  }
+
+  .compras-submit button {
+    width: 100%;
+  }
+}
