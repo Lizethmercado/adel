@@ -1,14 +1,56 @@
+
 import { useRef, useState } from 'react';
 import './RegisterPage.css';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [feedback, setFeedback] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const passwordInput = useRef(null);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    setFeedback('Datos validados. El envío se habilitará cuando se conecte el registro.');
+
+    const form = event.currentTarget;
+
+    const datos = Object.fromEntries(
+      new FormData(form).entries()
+    );
+
+    setIsSubmitting(true);
+    setFeedback('');
+
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(datos),
+      });
+
+      const resultado = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          resultado.mensaje || 'No fue posible completar el registro.'
+        );
+      }
+
+      setFeedback(resultado.mensaje || 'Registro exitoso.');
+      form.reset();
+      setShowPassword(false);
+
+    } catch (error) {
+      if (error instanceof TypeError) {
+        setFeedback('No se pudo conectar con el servidor. Inténtalo nuevamente.');
+      } else {
+        setFeedback(error.message);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function togglePassword() {
@@ -30,7 +72,12 @@ export default function RegisterPage() {
         <h1 id="register-title">Crea tu cuenta</h1>
         <p>Ingresa tus datos y el nombre de tu negocio.</p>
 
-        <form className="register-form" onSubmit={handleSubmit} onInput={() => setFeedback('')}>
+        <form
+          className="register-form"
+          onSubmit={handleSubmit}
+          onInput={() => setFeedback('')}
+          aria-busy={isSubmitting}
+        >
           <div className="register-field">
             <label htmlFor="register-name">Nombre completo</label>
             <input
@@ -88,14 +135,22 @@ export default function RegisterPage() {
                 {showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
               </button>
             </div>
-            <small id="register-password-hint">Usa al menos 8 caracteres.</small>
+            <small id="register-password-hint">
+              Usa al menos 8 caracteres.
+            </small>
           </div>
 
-          <button className="action register-submit" type="submit">
-            Continuar
+          <button
+            className="action register-submit"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Creando cuenta...' : 'Continuar'}
           </button>
 
-          <p className="register-feedback" role="status">{feedback}</p>
+          <p className="register-feedback" role="status">
+            {feedback}
+          </p>
         </form>
       </div>
     </section>
