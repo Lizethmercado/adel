@@ -1,0 +1,178 @@
+
+.insumos-page {
+  width: min(100%, 850px);
+  margin: 20px auto;
+}
+
+.insumos-header {
+  margin-bottom: 25px;
+}
+
+.insumos-header h1 {
+  margin: 0 0 8px;
+  color: var(--forest);
+  font-size: 2rem;
+}
+
+.insumos-header p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.insumos-card {
+  padding: 32px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 12px 35px rgba(16, 58, 50, 0.07);
+}
+
+.insumos-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.insumo-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.insumo-field.full-width,
+.insumo-perecedero,
+.insumos-feedback,
+.insumos-submit {
+  grid-column: 1 / -1;
+}
+
+.insumo-field label {
+  color: var(--forest);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.insumo-field input,
+.insumo-field select {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: #fbfdfb;
+  color: var(--forest);
+  font: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.insumo-field input:focus,
+.insumo-field select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(23, 102, 78, 0.12);
+}
+
+.insumo-field input::placeholder {
+  color: #91a49b;
+}
+
+.insumo-perecedero {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f6fbf7;
+}
+
+.insumo-perecedero input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+}
+
+.insumo-perecedero label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--forest);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.insumo-perecedero small {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.insumos-feedback {
+  margin: 0;
+  padding: 12px 15px;
+  border-radius: 9px;
+  font-size: 0.92rem;
+}
+
+.insumos-feedback.error {
+  color: #a32929;
+  background: #fff1f0;
+  border: 1px solid #f3cdca;
+}
+
+.insumos-feedback.success {
+  color: #17664e;
+  background: #edf8f0;
+  border: 1px solid #c9e8d3;
+}
+
+.insumos-submit {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 5px;
+}
+
+.insumos-submit button {
+  min-width: 190px;
+  min-height: 46px;
+  border: none;
+  border-radius: 9px;
+  background: var(--green);
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.insumos-submit button:hover:not(:disabled) {
+  background: var(--forest);
+  transform: translateY(-1px);
+}
+
+.insumos-submit button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .insumos-card {
+    padding: 22px 17px;
+  }
+
+  .insumos-form {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .insumo-field.full-width,
+  .insumo-perecedero,
+  .insumos-feedback,
+  .insumos-submit {
+    grid-column: 1;
+  }
+
+  .insumos-submit button {
+    width: 100%;
+  }
+}

@@ -3,6 +3,7 @@ import HealthPage from './pages/HealthPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import BusinessPage from './pages/BusinessPage.jsx'
+import InsumosPage from './pages/InsumosPage.jsx'
 
 function HomePage() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
             <NavLink to="/registro">Registro</NavLink>
             <NavLink to="/iniciar-sesion">Iniciar sesión</NavLink>
             <NavLink to="/mi-negocio">Mi negocio</NavLink>
+            <NavLink to="/insumos">Registrar insumos</NavLink>
           </nav>
         </div>
       </header>
@@ -57,6 +59,7 @@ export default function App() {
           <Route path="/registro" element={<RegisterPage />} />
           <Route path="/iniciar-sesion" element={<LoginPage />} />
           <Route path="/mi-negocio" element={<BusinessPage />} />
+          <Route path="/insumos" element={<InsumosPage />} />
           <Route
             path="*"
             element={
