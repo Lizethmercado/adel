@@ -15,14 +15,29 @@ async function crear(negocioId, datos) {
             }
         });
     } catch (error) {
-        // La restricción (negocioId, nombreNormalizado) cubre incluso dos solicitudes simultáneas
+        // La restricción cubre incluso dos solicitudes simultáneas.
         if (error.code === 'P2002') {
             const conflicto = new Error('Ya existe un insumo con ese nombre en tu negocio.');
             conflicto.statusCode = 409;
             throw conflicto;
         }
+
         throw error;
     }
 }
 
-module.exports = { crear };
+function listarPorNegocio(negocioId) {
+    return prisma.insumo.findMany({
+        where: { negocioId },
+        select: {
+            id: true,
+            nombre: true,
+            unidad: true,
+            cantidadActual: true,
+            cantidadMinima: true
+        },
+        orderBy: { id: 'asc' }
+    });
+}
+
+module.exports = { crear, listarPorNegocio };
