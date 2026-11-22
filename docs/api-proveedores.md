@@ -27,29 +27,28 @@ Todas las rutas exigen sesión (`Authorization: Bearer <token>`). El negocio se 
 
 ## 3. Pruebas
 
-La suite `backend/tests/proveedores.test.js` (T27) cubre los cuatro escenarios de HU-09, el caso sin compras, el aislamiento por negocio (R-01) y la ausencia de sesión. Se escribió antes que la API (fase roja, `404`) y pasó al implementarla en T28.
+La suite `backend/tests/proveedores.test.js` (T27) contiene 9 pruebas que cubren los cuatro escenarios de HU-09, el caso sin compras, el rechazo de estado inválido (`400`), el aislamiento por negocio (`R-01`) y la ausencia de sesión (`401` en `GET`, `POST` y `DELETE`). Las 7 pruebas iniciales se escribieron antes que la API (fase roja, `404`) y pasaron al implementarla en T28, sumándose luego las 2 pruebas adicionales durante la revisión.
 
 ## 4. Evidencias de ejecución
 
-
 ### 4.1 Fase roja (T27)
 
-Las siete pruebas se escribieron antes que la API y fallaron porque la ruta aún no existía (`404`).
+Las siete pruebas iniciales se escribieron antes que la API y fallaron porque la ruta aún no existía (`404`).
 
-![Fase roja: las siete pruebas de proveedores fallan con 404](image.png)
+![Fase roja: las siete pruebas iniciales de proveedores fallan con 404](image.png)
 
 ### 4.2 Fase verde (T28)
 
-Con la API implementada, pasan las siete pruebas de proveedores y las 19 anteriores del backend (26 en total).
+Con la API implementada y los casos adicionales del contrato, pasan las 9 pruebas de proveedores y las 19 anteriores del backend (28 en total, 7 suites).
 
-![Fase verde: 7 suites y 26 pruebas aprobadas](image-1.png)
+![Fase verde: 7 suites y 28 pruebas aprobadas](image-3.png)
 
 ### 4.3 Historial de commits
 
-El commit `test:` quedó antes del commit `feat:`, que es la evidencia del ciclo de TDD.
+El commit `test:` quedó antes del commit `feat:`, seguido de las pruebas adicionales solicitadas en revisión, dejando trazabilidad completa del ciclo TDD.
 
 ### 4.4 Prueba manual contra la base de desarrollo
 
-Escenarios probados con el servidor real y PostgreSQL: registro, nombre vacío, proveedor con compras (se desactiva), listado de activos y estado inválido.
+Escenarios probados con el servidor real y PostgreSQL (`adel_dev`): registro, nombre vacío, proveedor con compras (se desactiva a `INACTIVO`), listado de activos y estado inválido.
 
-![alt text](image-2.png)
+![Prueba manual contra la base de desarrollo adel_dev](image-2.png)
