@@ -81,7 +81,7 @@ afterAll(async () => {
 });
 
 describe('Compras (HU-10)', () => {
-  test('HU-10 escenario 1: registra una compra con varios insumos, calcula el total y actualiza el inventario en una transacción', async () => {
+  test('HU-10 escenarios 1 y 2: registra la compra con su total y suma las cantidades al inventario en una transacción', async () => {
     const proveedor = await prisma.proveedor.create({
       data: { negocioId: negocioA.id, nombre: 'Distribuidora El Sol' },
     });
@@ -121,7 +121,7 @@ describe('Compras (HU-10)', () => {
     expect(Number(quesoActualizado.cantidadActual)).toBe(6);
   });
 
-  test('HU-10 escenario 2: rechaza datos inválidos o vacíos y no altera el inventario', async () => {
+  test('HU-10 escenario 3: rechaza datos inválidos o vacíos y no altera el inventario', async () => {
     const proveedor = await prisma.proveedor.create({
       data: { negocioId: negocioA.id, nombre: 'Proveedor Validación' },
     });
@@ -166,7 +166,7 @@ describe('Compras (HU-10)', () => {
     expect(Number(azucarIntacta.cantidadActual)).toBe(8);
   });
 
-  test('HU-10 escenario 3: rechaza un proveedor inactivo o de otro negocio y no altera el inventario', async () => {
+  test('HU-10 escenario 4: rechaza un proveedor inactivo o de otro negocio y no altera el inventario', async () => {
     const proveedorInactivo = await prisma.proveedor.create({
       data: {
         negocioId: negocioA.id,
@@ -213,7 +213,7 @@ describe('Compras (HU-10)', () => {
     expect(Number(salIntacta.cantidadActual)).toBe(4);
   });
 
-  test('HU-10 escenario 4: rechaza un insumo de otro negocio y revierte toda la transacción', async () => {
+  test('HU-10 escenario 4: rechaza un insumo de otro negocio y no deja cambios parciales', async () => {
     const proveedor = await prisma.proveedor.create({
       data: { negocioId: negocioA.id, nombre: 'Proveedor Atomicidad' },
     });
