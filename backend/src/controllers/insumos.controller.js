@@ -6,14 +6,16 @@ function textoVacio(valor) {
     return typeof valor !== 'string' || valor.trim() === '';
 }
 
-// Acepta números y también texto numérico, que es lo que envía un formulario
+// Acepta números y texto numérico enviado por el formulario.
 function aNumero(valor) {
     if (typeof valor === 'number') {
         return valor;
     }
+
     if (typeof valor === 'string' && valor.trim() !== '') {
         return Number(valor);
     }
+
     return Number.NaN;
 }
 
@@ -63,4 +65,18 @@ async function crear(req, res) {
     });
 }
 
-module.exports = { crear };
+async function listar(req, res) {
+    const insumos = await insumosService.listarPorNegocio(req.usuario.negocio.id);
+
+    return res.status(200).json({
+        insumos: insumos.map((insumo) => ({
+            id: insumo.id,
+            nombre: insumo.nombre,
+            unidad: insumo.unidad,
+            cantidadActual: Number(insumo.cantidadActual),
+            cantidadMinima: Number(insumo.cantidadMinima)
+        }))
+    });
+}
+
+module.exports = { crear, listar };
