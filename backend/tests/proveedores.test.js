@@ -207,4 +207,29 @@ describe('Proveedores (HU-09)', () => {
     await request(app).get(ruta).expect(401);
     await request(app).post(ruta).send({ nombre: 'Sin sesión' }).expect(401);
   });
+
+test('HU-09: un estado inválido en el listado se rechaza con 400', async () => {
+    const { body } = await request(app)
+      .get(`${ruta}?estado=XYZ`)
+      .set('Authorization', `Bearer ${tokenA}`)
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    expect(body.mensaje).toEqual(expect.any(String));
+    expect(body.campos).toEqual(['estado']);
+  });
+
+  test('R-01: eliminar sin sesión responde 401 y no modifica el proveedor', async () => {
+    const proveedor = await prisma.proveedor.create({
+      data: { negocioId: negocioA.id, nombre: 'Proveedor sin sesión' },
+    });
+
+    await request(app).delete(`${ruta}/${proveedor.id}`).expect(401);
+
+    const intacto = await prisma.proveedor.findUnique({
+      where: { id: proveedor.id },
+    });
+    expect(intacto).not.toBeNull();
+    expect(intacto.estado).toBe('ACTIVO');
+  });
 });
