@@ -241,4 +241,61 @@ describe('Variación de precios (HU-12)', () => {
     expect(body.proveedores[0].compras[0].variacionPorcentual).toBeNull();
     expect(body.mensaje).toBe(mensajeComparacion);
   });
+  test('HU-12 adicional: una sola compra con dos líneas del mismo insumo cuenta como una única compra', async () => {
+    const proveedor = await crearProveedor(negocioA.id, 'Proveedor Multilínea');
+    const harina = await crearInsumo(negocioA.id, 'Harina');
+
+    const compra = await prisma.compra.create({
+      data: {
+        negocioId: negocioA.id,
+        proveedorId: proveedor.id,
+        fecha: new Date('2026-11-10T00:00:00.000Z'),
+        total: 8400,
+        detalles: {
+          create: [
+            { insumoId: harina.id, cantidad: 1, precioUnitario: 4000 },
+            { insumoId: harina.id, cantidad: 1, precioUnitario: 4400 },
+          ],
+        },
+      },
+    });
+
+    const { body } = await consultarVariacion(tokenA, harina.id)
+      .expect(200)
+      .expect('Content-Type', /json/);
+
+    expect(body.proveedores).toHaveLength(1);
+    expect(body.proveedores[0].compras).toHaveLength(1);
+    expect(body.proveedores[0].compras[0]).toMatchObject({
+      compraId: compra.id,
+      fecha: '2026-11-10',
+      precioUnitario: 4200,
+      variacionPorcentual: null,
+    });
+    expect(body.mensaje).toBe(mensajeComparacion);
+  });
+
+  test('HU-12 adicional: insumo sin compras devuelve lista vacía y mensaje informativo', async () => {
+    const harina = await crearInsumo(negocioA.id, 'Harina sin compras');
+
+    const { body } = await consultarVariacion(tokenA, harina.id)
+      .expect(200)
+      .expect('Content-Type', /json/);
+
+    expect(body.proveedores).toEqual([]);
+    expect(body.mensaje).toBe(mensajeComparacion);
+  });
+
+  test('R-01: rechaza con 404 un insumo de otro negocio o un ID fuera de rango', async () => {
+    const insumoAjeno = await crearInsumo(negocioB.id, 'Harina Negocio B');
+
+    await consultarVariacion(tokenA, insumoAjeno.id).expect(404);
+    await consultarVariacion(tokenA, 999999999999).expect(404);
+  });
+
+  test('R-01: sin sesión responde 401', async () => {
+    await request(app)
+      .get(`${ruta}/1/variacion-precios`)
+      .expect(401);
+  });
 });
