@@ -79,4 +79,27 @@ async function listar(req, res) {
     });
 }
 
-module.exports = { crear, listar };
+async function obtenerVariacionPrecios(req, res) {
+    const insumoId = Number(req.params.insumoId);
+
+    if (!Number.isInteger(insumoId) || insumoId <= 0) {
+        return res.status(404).json({
+            mensaje: 'Insumo no encontrado.'
+        });
+    }
+
+    const resultado = await insumosService.obtenerVariacionPrecios(
+        req.usuario.negocio.id,
+        insumoId
+    );
+
+    if (!resultado) {
+        return res.status(404).json({
+            mensaje: 'Insumo no encontrado.'
+        });
+    }
+
+    return res.status(200).json(resultado);
+}
+
+module.exports = { crear, listar, obtenerVariacionPrecios };
