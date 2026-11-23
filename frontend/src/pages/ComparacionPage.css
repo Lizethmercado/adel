@@ -1,0 +1,126 @@
+.comparacion-page {
+  display: grid;
+  gap: 1.5rem;
+  padding-block: 1.5rem 3rem;
+}
+
+.comparacion-header h1 {
+  margin: 0;
+  color: var(--forest);
+  font-size: clamp(1.7rem, 4vw, 2.2rem);
+}
+
+.comparacion-header p {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.comparacion-card {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(16 58 50 / 5%);
+}
+
+.comparacion-selector {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 28rem;
+}
+
+.comparacion-selector label {
+  color: var(--forest);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.comparacion-selector select {
+  width: 100%;
+  min-height: 2.8rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: #fff;
+  color: #15332e;
+  font: inherit;
+}
+
+.comparacion-selector select:focus {
+  border-color: var(--green);
+  outline: 3px solid rgb(23 102 78 / 12%);
+}
+
+.comparacion-feedback {
+  margin: 1.2rem 0 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.65rem;
+  line-height: 1.5;
+}
+
+.comparacion-feedback.error {
+  border: 1px solid #f2c4c4;
+  background: #fff0f0;
+  color: #9c2929;
+}
+
+.comparacion-feedback.info {
+  border: 1px solid #f2dfa4;
+  background: #fffbeb;
+  color: #713f12;
+}
+
+.comparacion-empty {
+  margin: 1.2rem 0 0;
+  padding: 1.5rem 1rem;
+  border: 1px dashed var(--border);
+  border-radius: 0.7rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.comparacion-table-wrapper {
+  margin-top: 1.3rem;
+  overflow-x: auto;
+}
+
+.comparacion-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.comparacion-table th,
+.comparacion-table td {
+  padding: 0.9rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.comparacion-table th {
+  background: #f5f9f6;
+  color: var(--forest);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.comparacion-fila-mejor {
+  background: #f3fbf6;
+}
+
+.comparacion-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--mint);
+  color: var(--forest);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .comparacion-card {
+    padding: 1rem;
+  }
+}
