@@ -1,0 +1,67 @@
+
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build frontend and test backend
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: adel_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d adel_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/adel_test?schema=public
+      NODE_ENV: test
+      JWT_SECRET: clave-de-prueba-para-ci
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar dependencias del frontend
+        working-directory: frontend
+        run: npm ci
+
+      - name: Construir frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Instalar dependencias del backend
+        working-directory: backend
+        run: npm ci
+
+      - name: Generar cliente de Prisma
+        working-directory: backend
+        run: npx prisma generate
+
+      - name: Aplicar migraciones de Prisma
+        working-directory: backend
+        run: npx prisma migrate deploy
+
+      - name: Ejecutar pruebas del backend
+        working-directory: backend
+        run: npm test

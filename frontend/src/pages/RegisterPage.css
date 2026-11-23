@@ -1,0 +1,156 @@
+.register-page {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  width: min(100%, 58rem);
+  margin-inline: auto;
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  background: #fff;
+  box-shadow: 0 20px 56px #103a3214;
+}
+
+.register-intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4rem;
+  padding: clamp(1.5rem, 5vw, 3.25rem);
+  border-radius: 1.45rem 0 0 1.45rem;
+  background:
+    radial-gradient(ellipse at 100% 0%, #28785a, transparent 68%),
+    var(--forest);
+  color: #fff;
+}
+
+.register-wordmark {
+  width: fit-content;
+  padding-bottom: 0.55rem;
+  border-bottom: 2px solid #a6e4c2;
+  color: var(--mint);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.register-intro h2 {
+  max-width: 11ch;
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 1.03;
+  letter-spacing: -0.055em;
+}
+
+.register-intro p,
+.register-panel > p {
+  margin: 0.8rem 0 0;
+  line-height: 1.55;
+}
+
+.register-intro p {
+  max-width: 28ch;
+  color: var(--mint);
+}
+
+.register-panel {
+  min-width: 0;
+  padding: clamp(1.5rem, 5vw, 3rem);
+}
+
+.register-panel h1 {
+  margin: 0;
+  color: var(--forest);
+  font-size: clamp(2rem, 4vw, 2.65rem);
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+}
+
+.register-panel > p,
+.register-field small {
+  color: var(--muted);
+}
+
+.register-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.6rem;
+}
+
+.register-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.register-field label {
+  color: var(--forest);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.register-field input {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.85rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid #8ba69a;
+  border-radius: 0.65rem;
+  background: #f7faf8;
+  color: inherit;
+  font: inherit;
+}
+
+.register-field input:focus {
+  border-color: var(--green);
+  background: #fff;
+}
+
+.register-password {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.register-password-toggle {
+  justify-self: end;
+  min-height: 2rem;
+  padding: 0 0.2rem;
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+
+.register-submit {
+  width: 100%;
+  margin-top: 0.2rem;
+}
+
+.register-feedback {
+  margin: 0;
+  color: var(--forest);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.register-feedback:not(:empty) {
+  padding: 0.75rem;
+  border-radius: 0.65rem;
+  background: var(--mint);
+}
+
+@media (max-width: 700px) {
+  .register-page {
+    grid-template-columns: 1fr;
+  }
+
+  .register-intro {
+    gap: 1.25rem;
+    border-radius: 1.45rem 1.45rem 0 0;
+  }
+
+  .register-intro h2 {
+    max-width: none;
+  }
+}

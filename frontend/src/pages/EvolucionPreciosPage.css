@@ -1,0 +1,17 @@
+.precios-filtro label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--forest);
+  font-weight: 700;
+}
+
+.precios-filtro select {
+  width: min(100%, 24rem);
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #8ba69a;
+  border-radius: 0.65rem;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
