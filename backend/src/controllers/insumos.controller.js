@@ -107,4 +107,36 @@ async function obtenerVariacionPrecios(req, res) {
     return res.status(200).json(resultado);
 }
 
-module.exports = { crear, listar, obtenerVariacionPrecios };
+async function obtenerComparacionPrecios(req, res) {
+    const insumoId = Number(req.params.insumoId);
+
+    if (
+        !Number.isInteger(insumoId) ||
+        insumoId <= 0 ||
+        insumoId > MAXIMO_ID_INT
+    ) {
+        return res.status(404).json({
+            mensaje: 'Insumo no encontrado.'
+        });
+    }
+
+    const resultado = await insumosService.obtenerComparacionPrecios(
+        req.usuario.negocio.id,
+        insumoId
+    );
+
+    if (!resultado) {
+        return res.status(404).json({
+            mensaje: 'Insumo no encontrado.'
+        });
+    }
+
+    return res.status(200).json(resultado);
+}
+
+module.exports = {
+    crear,
+    listar,
+    obtenerVariacionPrecios,
+    obtenerComparacionPrecios
+};
