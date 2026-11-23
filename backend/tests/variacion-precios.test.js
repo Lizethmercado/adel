@@ -171,7 +171,7 @@ describe('Variación de precios (HU-12)', () => {
     expect(body.mensaje).toBeUndefined();
   });
 
-  test('HU-12 escenario 2: no calcula variación entre proveedores distintos', async () => {
+  test('HU-12 escenario 1: agrupa las compras por proveedor y evita comparar proveedores distintos', async () => {
     const proveedorA = await crearProveedor(negocioA.id, 'Proveedor A');
     const proveedorB = await crearProveedor(negocioA.id, 'Proveedor B');
     const harina = await crearInsumo(negocioA.id, 'Harina');
@@ -214,7 +214,7 @@ describe('Variación de precios (HU-12)', () => {
     expect(body.mensaje).toBe(mensajeComparacion);
   });
 
-  test('HU-12 escenario 3: muestra el mensaje cuando existe una sola compra', async () => {
+  test('HU-12 escenario 2: muestra el mensaje cuando existe una sola compra', async () => {
     const proveedor = await crearProveedor(negocioA.id, 'Proveedor Único');
     const harina = await crearInsumo(negocioA.id, 'Harina');
 
@@ -241,7 +241,7 @@ describe('Variación de precios (HU-12)', () => {
     expect(body.proveedores[0].compras[0].variacionPorcentual).toBeNull();
     expect(body.mensaje).toBe(mensajeComparacion);
   });
-  test('HU-12 adicional: una sola compra con dos líneas del mismo insumo cuenta como una única compra', async () => {
+  test('HU-12 escenario 2: una sola compra con dos líneas del mismo insumo cuenta como una única compra', async () => {
     const proveedor = await crearProveedor(negocioA.id, 'Proveedor Multilínea');
     const harina = await crearInsumo(negocioA.id, 'Harina');
 
@@ -275,7 +275,7 @@ describe('Variación de precios (HU-12)', () => {
     expect(body.mensaje).toBe(mensajeComparacion);
   });
 
-  test('HU-12 adicional: insumo sin compras devuelve lista vacía y mensaje informativo', async () => {
+  test('HU-12 escenario 2: insumo sin compras devuelve lista vacía y mensaje informativo', async () => {
     const harina = await crearInsumo(negocioA.id, 'Harina sin compras');
 
     const { body } = await consultarVariacion(tokenA, harina.id)
@@ -286,7 +286,7 @@ describe('Variación de precios (HU-12)', () => {
     expect(body.mensaje).toBe(mensajeComparacion);
   });
 
-  test('R-01: rechaza con 404 un insumo de otro negocio o un ID fuera de rango', async () => {
+  test('HU-12 escenario 3 (R-01): rechaza con 404 un insumo de otro negocio o un ID fuera de rango', async () => {
     const insumoAjeno = await crearInsumo(negocioB.id, 'Harina Negocio B');
 
     await consultarVariacion(tokenA, insumoAjeno.id).expect(404);

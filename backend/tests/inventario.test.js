@@ -165,7 +165,7 @@ describe('GET /api/insumos (HU-07)', () => {
     expect(Number(leche.cantidadMinima)).toBe(1);
   });
 
-  test('HU-07 escenario 2: consultar únicamente insumos del propio negocio', async () => {
+  test('HU-07 escenario 4 (R-01): consultar únicamente insumos del propio negocio', async () => {
     await crearInsumo(negocioPrincipal.id, {
       nombre: 'Arroz',
       unidad: 'kg',
@@ -191,7 +191,7 @@ describe('GET /api/insumos (HU-07)', () => {
     expect(respuesta.body.insumos[0].nombre).not.toBe('Azúcar');
   });
 
-  test('HU-07 escenario 3: consultar cantidades actuales y mínimas', async () => {
+  test('HU-07 escenario 1: consultar cantidades actuales y mínimas', async () => {
     await crearInsumo(negocioPrincipal.id, {
       nombre: 'Harina',
       unidad: 'kg',
@@ -250,7 +250,7 @@ describe('GET /api/insumos (HU-07)', () => {
     );
   });
 
-  test('HU-07 escenario 4: consultar inventario vacío', async () => {
+  test('HU-07 escenario 3: consultar inventario vacío en la API', async () => {
     const respuesta = await request(app)
       .get(rutaInsumos)
       .set('Authorization', `Bearer ${tokenPrincipal}`)

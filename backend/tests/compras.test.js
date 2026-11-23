@@ -132,7 +132,7 @@ describe('Compras (HU-10)', () => {
     expect(guardada.detalles).toHaveLength(2);
   });
 
-  test('HU-10 escenario 2: suma la cantidad comprada al inventario (5 + 10 = 15)', async () => {
+  test('HU-10 escenario 1: suma la cantidad comprada al inventario (5 + 10 = 15)', async () => {
     const proveedor = await crearProveedor(negocioA.id, 'Proveedor Inventario');
     const arroz = await crearInsumo(negocioA.id, 'Arroz', 5, 2);
 
@@ -144,7 +144,7 @@ describe('Compras (HU-10)', () => {
     expect(await cantidadDe(arroz.id)).toBe(15);
   });
 
-  test('HU-10 escenario 3: rechaza cantidad o precio en cero o negativos y no modifica el inventario', async () => {
+  test('HU-10 escenario 2: rechaza cantidad o precio en cero o negativos y no modifica el inventario', async () => {
     const proveedor = await crearProveedor(negocioA.id, 'Proveedor Validación');
     const azucar = await crearInsumo(negocioA.id, 'Azúcar', 8, 2);
     const comprasAntes = await contarCompras(negocioA.id);
@@ -172,7 +172,7 @@ describe('Compras (HU-10)', () => {
     expect(await cantidadDe(azucar.id)).toBe(8);
   });
 
-  test('HU-10 escenario 3: rechaza una compra sin detalles y no registra ninguna compra', async () => {
+  test('HU-10 escenario 2: rechaza una compra sin detalles y no registra ninguna compra', async () => {
     const proveedor = await crearProveedor(negocioA.id, 'Proveedor Sin Detalles');
     const comprasAntes = await contarCompras(negocioA.id);
 
@@ -187,7 +187,7 @@ describe('Compras (HU-10)', () => {
     expect(await contarCompras(negocioA.id)).toBe(comprasAntes);
   });
 
-  test('HU-10 escenario 3: rechaza una compra sin proveedorId con 400 y no modifica el inventario', async () => {
+  test('HU-10 escenario 2: rechaza una compra sin proveedorId con 400 y no modifica el inventario', async () => {
     const aceite = await crearInsumo(negocioA.id, 'Aceite de cocina', 7, 2);
     const comprasAntes = await contarCompras(negocioA.id);
 
@@ -203,7 +203,7 @@ describe('Compras (HU-10)', () => {
     expect(await cantidadDe(aceite.id)).toBe(7);
   });
 
-  test('HU-10 escenario 4a: rechaza un proveedor de otro negocio y no registra la compra', async () => {
+  test('HU-10 escenario 3: rechaza un proveedor de otro negocio y no registra la compra', async () => {
     const proveedorAjeno = await crearProveedor(negocioB.id, 'Proveedor Negocio B');
     const sal = await crearInsumo(negocioA.id, 'Sal refinada', 4, 1);
     const comprasAntes = await contarCompras(negocioA.id);
@@ -220,7 +220,7 @@ describe('Compras (HU-10)', () => {
     expect(await cantidadDe(sal.id)).toBe(4);
   });
 
-  test('HU-10 escenario 4b: rechaza un insumo de otro negocio y no deja cambios parciales', async () => {
+  test('HU-10 escenario 4: rechaza un insumo de otro negocio y no deja cambios parciales', async () => {
     const proveedor = await crearProveedor(negocioA.id, 'Proveedor Atomicidad');
     const insumoPropio = await crearInsumo(negocioA.id, 'Aceite vegetal', 6, 2);
     const insumoAjeno = await crearInsumo(negocioB.id, 'Aceite Negocio B', 12, 2);
@@ -242,7 +242,7 @@ describe('Compras (HU-10)', () => {
     expect(await cantidadDe(insumoAjeno.id)).toBe(12);
   });
 
-  test('HU-09 escenario 4 (aplicado a compras): rechaza un proveedor inactivo y no registra la compra', async () => {
+  test('HU-10 escenario 3: rechaza un proveedor inactivo y no registra la compra', async () => {
     const proveedorInactivo = await crearProveedor(
       negocioA.id,
       'Proveedor Inactivo',
