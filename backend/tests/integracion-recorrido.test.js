@@ -42,25 +42,37 @@ afterAll(async () => {
   if (!prisma) return;
 
   try {
-    if (negocioId) {
+    let idNegocioLimpieza = negocioId;
+
+    // Recuperar el negocio por el correo si no se obtuvo su ID.
+    if (!idNegocioLimpieza) {
+      const usuario = await prisma.usuario.findUnique({
+        where: { correo: datos.correo },
+        select: { negocioId: true },
+      });
+
+      idNegocioLimpieza = usuario?.negocioId;
+    }
+
+    if (idNegocioLimpieza) {
       await prisma.$transaction([
         prisma.detalleCompra.deleteMany({
-          where: { compra: { negocioId } },
+          where: { compra: { negocioId: idNegocioLimpieza } },
         }),
         prisma.compra.deleteMany({
-          where: { negocioId },
+          where: { negocioId: idNegocioLimpieza },
         }),
         prisma.insumo.deleteMany({
-          where: { negocioId },
+          where: { negocioId: idNegocioLimpieza },
         }),
         prisma.proveedor.deleteMany({
-          where: { negocioId },
+          where: { negocioId: idNegocioLimpieza },
         }),
         prisma.usuario.deleteMany({
-          where: { negocioId },
+          where: { negocioId: idNegocioLimpieza },
         }),
         prisma.negocio.deleteMany({
-          where: { id: negocioId },
+          where: { id: idNegocioLimpieza },
         }),
       ]);
     }
@@ -72,16 +84,17 @@ afterAll(async () => {
 describe('Integración del recorrido principal de ADEL (T42)', () => {
   test('registra una cuenta, un insumo, un proveedor y una compra, y consulta su precio', async () => {
     // 1. Registrar usuario y negocio.
-    const registro = await request(app)
-      .post('/api/auth/register')
-      .send(datos)
-      .expect(201)
-      .expect('Content-Type', /json/);
+      const registro = await request(app)
+    .post('/api/auth/register')
+    .send(datos)
+    .expect(201)
+    .expect('Content-Type', /json/);
 
-    expect(registro.body.usuario.correo).toBe(datos.correo);
-    expect(registro.body.negocio.nombre).toBe(datos.nombreNegocio);
+  // Capturar el ID antes de ejecutar las aserciones.
+  negocioId = registro.body?.negocio?.id;
 
-    negocioId = registro.body.negocio.id;
+  expect(registro.body.usuario.correo).toBe(datos.correo);
+  expect(registro.body.negocio.nombre).toBe(datos.nombreNegocio);
 
     // 2. Iniciar sesión y obtener el token.
     const login = await request(app)
