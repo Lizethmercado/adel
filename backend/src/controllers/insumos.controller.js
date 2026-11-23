@@ -1,6 +1,7 @@
 const insumosService = require('../services/insumos.service');
 
 const MAXIMO_CANTIDAD = 999999999;
+const MAXIMO_ID_INT = 2147483647;
 
 function textoVacio(valor) {
     return typeof valor !== 'string' || valor.trim() === '';
@@ -79,4 +80,31 @@ async function listar(req, res) {
     });
 }
 
-module.exports = { crear, listar };
+async function obtenerVariacionPrecios(req, res) {
+    const insumoId = Number(req.params.insumoId);
+
+    if (
+        !Number.isInteger(insumoId) ||
+        insumoId <= 0 ||
+        insumoId > MAXIMO_ID_INT
+    ) {
+        return res.status(404).json({
+            mensaje: 'Insumo no encontrado.'
+        });
+    }
+
+    const resultado = await insumosService.obtenerVariacionPrecios(
+        req.usuario.negocio.id,
+        insumoId
+    );
+
+    if (!resultado) {
+        return res.status(404).json({
+            mensaje: 'Insumo no encontrado.'
+        });
+    }
+
+    return res.status(200).json(resultado);
+}
+
+module.exports = { crear, listar, obtenerVariacionPrecios };
