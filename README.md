@@ -75,6 +75,23 @@ npm test
 
 El mismo comando se ejecuta de forma automática en GitHub Actions en cada push y pull request.
 
+## Ejecución con Docker
+
+Requisitos: Docker Desktop (o Docker Engine con el plugin Compose).
+
+1. Copiar la plantilla de variables y ajustarla: `Copy-Item .env.example .env` (PowerShell) o `cp .env.example .env`. Cambiar al menos `POSTGRES_PASSWORD` y `JWT_SECRET`.
+2. Construir y levantar todo: `docker compose up --build`.
+3. Abrir `http://localhost:8080` (o el puerto definido en `FRONTEND_PORT`).
+
+Al iniciar, el backend aplica las migraciones de Prisma. Los datos de PostgreSQL se guardan en el volumen `adel_pgdata` y se conservan entre reinicios.
+
+| Acción | Comando |
+| --- | --- |
+| Detener sin borrar datos | `docker compose down` |
+| Detener y borrar la base de datos | `docker compose down -v` |
+| Ver los registros del backend | `docker compose logs backend` |
+| Entrar a PostgreSQL | `docker compose exec db psql -U <POSTGRES_USER> -d <POSTGRES_DB>` |
+
 ## Tablero de trabajo
 
 El avance del Sprint 1 se gestiona en un GitHub Project público: [Sprint 1 - ADEL](https://github.com/users/XimenaBarrera1/projects/1).
