@@ -7,6 +7,7 @@ import InsumosPage from './pages/InsumosPage.jsx'
 import InventarioPage from './pages/InventarioPage.jsx'
 import ProveedoresPage from './pages/ProveedoresPage.jsx'
 import ComprasPage from './pages/ComprasPage.jsx'
+import EvolucionPreciosPage from './pages/EvolucionPreciosPage.jsx'
 import ComparacionPage from './pages/ComparacionPage.jsx'
 
 function HomePage() {
@@ -47,6 +48,7 @@ export default function App() {
             <NavLink to="/inventario">Inventario</NavLink>
             <NavLink to="/proveedores">Proveedores</NavLink>
             <NavLink to="/compras">Compras</NavLink>
+            <NavLink to="/evolucion-precios">Evolución de precios</NavLink>
             <NavLink to="/comparacion">Comparar precios</NavLink>
           </nav>
         </div>
@@ -71,6 +73,7 @@ export default function App() {
           <Route path="/inventario" element={<InventarioPage />} />
           <Route path="/proveedores" element={<ProveedoresPage />} />
           <Route path="/compras" element={<ComprasPage />} />
+          <Route path="/evolucion-precios" element={<EvolucionPreciosPage />} />
           <Route path="/comparacion" element={<ComparacionPage />} />
           <Route
             path="*"
