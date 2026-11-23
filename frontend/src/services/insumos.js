@@ -33,6 +33,7 @@ export async function registrarInsumo(token, datos) {
 
   return data;
 }
+
 export async function listarInsumos(token, signal) {
   const respuesta = await fetch('/api/insumos', {
     headers: {
@@ -57,4 +58,34 @@ export async function listarInsumos(token, signal) {
   }
 
   return datos.insumos;
+}
+
+export async function consultarVariacionPrecios(insumoId, token, signal) {
+  const respuesta = await fetch(`/api/insumos/${insumoId}/variacion-precios`, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    signal,
+  });
+
+  if (respuesta.status === 401) {
+    return null;
+  }
+
+  if (respuesta.status === 404) {
+    throw new Error('Este insumo ya no está disponible.');
+  }
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudo consultar la evolución de precios.');
+  }
+
+  const datos = await respuesta.json().catch(() => null);
+
+  if (!datos?.insumo || !Array.isArray(datos.proveedores)) {
+    throw new Error('El servidor devolvió un historial inválido.');
+  }
+
+  return datos;
 }
