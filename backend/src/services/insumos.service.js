@@ -172,4 +172,120 @@ async function obtenerVariacionPrecios(negocioId, insumoId) {
     return resultado;
 }
 
-module.exports = { crear, listarPorNegocio, obtenerVariacionPrecios };
+async function obtenerComparacionPrecios(negocioId, insumoId) {
+    const insumo = await prisma.insumo.findFirst({
+        where: { id: insumoId, negocioId },
+        select: {
+            id: true,
+            nombre: true,
+            unidad: true
+        }
+    });
+
+    if (!insumo) {
+        return null;
+    }
+
+    const detalles = await prisma.detalleCompra.findMany({
+        where: {
+            insumoId: insumo.id,
+            compra: {
+                negocioId,
+                proveedor: {
+                    estado: 'ACTIVO'
+                }
+            }
+        },
+        select: {
+            cantidad: true,
+            precioUnitario: true,
+            compra: {
+                select: {
+                    id: true,
+                    fecha: true,
+                    creadoEn: true,
+                    proveedor: {
+                        select: {
+                            id: true,
+                            nombre: true
+                        }
+                    }
+                }
+            }
+        },
+        orderBy: [
+            { compra: { fecha: 'desc' } },
+            { compra: { creadoEn: 'desc' } },
+            { compra: { id: 'desc' } },
+            { id: 'asc' }
+        ]
+    });
+
+    const proveedoresMap = new Map();
+
+    for (const detalle of detalles) {
+        const compra = detalle.compra;
+        const proveedorId = compra.proveedor.id;
+
+        if (!proveedoresMap.has(proveedorId)) {
+            proveedoresMap.set(proveedorId, {
+                proveedorId,
+                nombre: compra.proveedor.nombre,
+                compraId: compra.id,
+                fecha: compra.fecha,
+                cantidadTotal: 0,
+                costoTotal: 0
+            });
+        }
+
+        const registro = proveedoresMap.get(proveedorId);
+
+        // Solo se considera la compra más reciente de cada proveedor.
+        if (registro.compraId !== compra.id) {
+            continue;
+        }
+
+        const cantidad = Number(detalle.cantidad);
+        const precioUnitario = Number(detalle.precioUnitario);
+
+        registro.cantidadTotal += cantidad;
+        registro.costoTotal += cantidad * precioUnitario;
+    }
+
+    const proveedores = Array.from(proveedoresMap.values())
+        .map((registro) => ({
+            proveedorId: registro.proveedorId,
+            nombre: registro.nombre,
+            ultimoPrecio: registro.cantidadTotal > 0
+                ? redondearDosDecimales(
+                    registro.costoTotal / registro.cantidadTotal
+                )
+                : 0,
+            fecha: registro.fecha.toISOString().slice(0, 10)
+        }))
+        .sort((a, b) => {
+            if (a.ultimoPrecio !== b.ultimoPrecio) {
+                return a.ultimoPrecio - b.ultimoPrecio;
+            }
+
+            return a.proveedorId - b.proveedorId;
+        });
+
+    const resultado = {
+        insumo,
+        proveedores
+    };
+
+    if (proveedores.length < 2) {
+        resultado.mensaje = 'No hay otro proveedor para comparar';
+    }
+
+    return resultado;
+}
+
+module.exports = {
+    crear,
+    listarPorNegocio,
+    obtenerVariacionPrecios,
+    obtenerComparacionPrecios
+};
