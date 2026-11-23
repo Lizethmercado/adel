@@ -158,3 +158,244 @@
   background: #edf8f0;
   color: var(--forest);
 }
+/* ========================================
+   T47 - MEJORA VISUAL Y RESPONSIVIDAD
+   Inventario y Evolución de precios
+======================================== */
+
+.inventario-page {
+  min-width: 0;
+  gap: 1.5rem;
+}
+
+.inventario-header {
+  background: linear-gradient(120deg, var(--yellow-soft), #fffdf8 75%);
+  border: 1px solid var(--border);
+  color: var(--forest);
+  box-shadow: 0 10px 28px rgba(38, 50, 56, 0.06);
+}
+
+.inventario-header p {
+  color: var(--muted);
+}
+
+.inventario-header .action {
+  background: var(--green);
+  color: var(--forest);
+}
+
+.inventario-header .action:hover:not(:disabled) {
+  background: #f2b83f;
+}
+
+.inventario-panel,
+.inventario-tabla-contenedor {
+  border-color: var(--border);
+  border-radius: 1.1rem;
+  box-shadow: 0 8px 24px rgba(38, 50, 56, 0.055);
+}
+
+.inventario-panel {
+  min-width: 0;
+}
+
+.inventario-tabla-contenedor {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.inventario-tabla {
+  min-width: 45rem;
+}
+
+.inventario-tabla thead {
+  background: var(--yellow-soft);
+  color: var(--forest);
+}
+
+.inventario-tabla th {
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.inventario-tabla td {
+  color: var(--forest);
+  font-size: 0.9rem;
+}
+
+.inventario-tabla tbody tr {
+  transition: background 150ms ease;
+}
+
+.inventario-tabla tbody tr:not(.inventario-fila--minimo):not(.inventario-fila--bajo):hover {
+  background: #f7faf9;
+}
+
+.inventario-estado {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+.inventario-estado--disponible {
+  background: #e3f8f5;
+  border-color: #a8dcd5;
+  color: #205e58;
+}
+
+.inventario-estado--minimo {
+  background: #fff5d6;
+  border-color: #f0d78a;
+  color: #76520c;
+}
+
+.inventario-estado--bajo {
+  background: #feecea;
+  border-color: #f3c4bf;
+  color: #912018;
+}
+
+.inventario-comparar-link {
+  border-color: var(--green);
+  background: #fff;
+  color: #805400;
+}
+
+.inventario-comparar-link:hover {
+  background: var(--yellow-soft);
+  color: var(--forest);
+}
+
+.inventario-comparar-link:focus-visible {
+  outline: 3px solid #d58b00;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .inventario-page {
+    gap: 1rem;
+  }
+
+  .inventario-header {
+    align-items: stretch;
+    padding: 1.25rem;
+  }
+
+  .inventario-header h1 {
+    font-size: clamp(1.65rem, 7vw, 2.2rem);
+  }
+
+  .inventario-header .action {
+    width: 100%;
+  }
+
+  .inventario-panel {
+    padding: 1rem;
+  }
+
+  .inventario-tabla th,
+  .inventario-tabla td {
+    padding: 0.75rem;
+  }
+}
+
+/* T47 - Resumen visual del inventario */
+
+.inventario-resumen {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  min-width: 0;
+}
+
+.inventario-indicador {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(38, 50, 56, 0.045);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.inventario-indicador:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(38, 50, 56, 0.08);
+}
+
+.inventario-indicador__icono {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 0.9rem;
+}
+
+.inventario-indicador__icono--total {
+  background: var(--yellow-soft);
+  color: #805400;
+}
+
+.inventario-indicador__icono--disponible {
+  background: #e3f8f5;
+  color: #205e58;
+}
+
+.inventario-indicador__icono--reponer {
+  background: #feecea;
+  color: #912018;
+}
+
+.inventario-indicador > div:last-child {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.inventario-indicador span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.inventario-indicador strong {
+  color: var(--forest);
+  font-size: 1.65rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 760px) {
+  .inventario-resumen {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .inventario-resumen {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Ilustración de total de insumos */
+.inventario-indicador__icono--total img {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+}
+
+.inventario-indicador__icono--disponible img {
+  width: 3.5rem;
+  height: 3.5rem;
+  object-fit: contain;
+  transform: scale(1.15);
+}
