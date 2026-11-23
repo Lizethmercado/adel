@@ -78,6 +78,7 @@ El mismo comando se ejecuta de forma automática en GitHub Actions en cada push 
 ## Tablero de trabajo
 
 El avance del Sprint 1 se gestiona en un GitHub Project público: [Sprint 1 - ADEL](https://github.com/users/XimenaBarrera1/projects/1).
+El avance del Sprint 2 se gestiona en un GitHub Project público: [Sprint 2 - ADEL](https://github.com/users/XimenaBarrera1/projects/2).
 
 ## Licencia
 
