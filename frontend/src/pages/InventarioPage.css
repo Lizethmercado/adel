@@ -80,7 +80,7 @@
 
 .inventario-tabla {
   width: 100%;
-  min-width: 39rem;
+  min-width: 45rem;
   border-collapse: collapse;
   text-align: left;
 }
@@ -135,4 +135,26 @@
 .inventario-estado--bajo {
   background: #fee4e2;
   color: #912018;
+}
+
+.inventario-comparar-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.1rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--green);
+  border-radius: 0.55rem;
+  background: #fff;
+  color: var(--green);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+
+.inventario-comparar-link:hover {
+  background: #edf8f0;
+  color: var(--forest);
 }

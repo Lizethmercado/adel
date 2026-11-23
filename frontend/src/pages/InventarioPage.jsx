@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router';
+import { Link, Navigate, useNavigate } from 'react-router';
 import { listarInsumos } from '../services/insumos.js';
 import {
   clearSessionToken,
@@ -134,6 +134,7 @@ export default function InventarioPage() {
                 <th scope="col">Cantidad actual</th>
                 <th scope="col">Cantidad mínima</th>
                 <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -150,6 +151,14 @@ export default function InventarioPage() {
                       <span className={`inventario-estado inventario-estado--${estado.clase}`}>
                         {estado.texto}
                       </span>
+                    </td>
+                    <td>
+                      <Link
+                        className="inventario-comparar-link"
+                        to={`/comparacion?insumoId=${insumo.id}`}
+                      >
+                        Comparar
+                      </Link>
                     </td>
                   </tr>
                 );
