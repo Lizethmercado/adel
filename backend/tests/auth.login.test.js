@@ -68,7 +68,7 @@ afterAll(async () => {
 });
 
 describe('POST /api/auth/login (HU-02)', () => {
-  test('responde 200 y devuelve el token y el negocio de la cuenta', async () => {
+  test('HU-02 escenario 1: responde 200 y devuelve el token y el negocio de la cuenta', async () => {
     const { body } = await request(app)
       .post(rutaLogin)
       .send({ correo, contrasena })
@@ -83,7 +83,7 @@ describe('POST /api/auth/login (HU-02)', () => {
     });
   });
 
-  test('responde 401 con un mensaje general para credenciales incorrectas', async () => {
+  test('HU-02 escenario 2: responde 401 con un mensaje general para credenciales incorrectas', async () => {
     const claveIncorrecta = await request(app)
       .post(rutaLogin)
       .send({ correo, contrasena: 'ClaveIncorrecta123' })
@@ -105,7 +105,7 @@ describe('POST /api/auth/login (HU-02)', () => {
     expect(correoInexistente.body).toEqual(claveIncorrecta.body);
   });
 
-  test('responde 400 cuando faltan datos obligatorios', async () => {
+  test('HU-02 escenario 3: responde 400 cuando faltan datos obligatorios', async () => {
     const sinContrasena = await request(app)
       .post(rutaLogin)
       .send({ correo })

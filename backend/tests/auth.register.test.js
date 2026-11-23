@@ -65,7 +65,7 @@ afterAll(async () => {
 });
 
 describe('POST /api/auth/register (HU-01)', () => {
-  test('responde 201 y guarda el usuario vinculado a su negocio', async () => {
+  test('HU-01 escenario 1: responde 201 y guarda el usuario vinculado a su negocio', async () => {
     const respuesta = await request(app)
       .post(rutaRegistro)
       .send({ ...datos, correo: ` ${datos.correo.toUpperCase()} ` })
@@ -100,7 +100,7 @@ describe('POST /api/auth/register (HU-01)', () => {
     });
   });
 
-  test('responde 400 e indica el campo obligatorio faltante', async () => {
+  test('HU-01 escenario 2: responde 400 e indica el campo obligatorio faltante', async () => {
     const respuesta = await request(app)
       .post(rutaRegistro)
       .send({
@@ -117,7 +117,7 @@ describe('POST /api/auth/register (HU-01)', () => {
     );
   });
 
-  test('responde 400 cuando la contraseña tiene menos de ocho caracteres', async () => {
+  test('HU-01 escenario 3: responde 400 cuando la contraseña tiene menos de ocho caracteres', async () => {
     const respuesta = await request(app)
       .post(rutaRegistro)
       .send({ ...datos, contrasena: 'Abc1234' })
@@ -128,7 +128,7 @@ describe('POST /api/auth/register (HU-01)', () => {
     expect(respuesta.body.mensaje).toMatch(/\b(?:8|ocho)\b/i);
   });
 
-  test('responde 409 por correo duplicado y no crea otro usuario ni negocio', async () => {
+  test('HU-01 escenario 4: responde 409 por correo duplicado y no crea otro usuario ni negocio', async () => {
     const original = await prisma.negocio.create({
       data: {
         nombre: nombreNegocioOriginal,
