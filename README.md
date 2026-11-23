@@ -1,5 +1,7 @@
 # ADEL
 
+Versión actual: 1.1.0 (ver [CHANGELOG](CHANGELOG.md)).
+
 Plataforma web con analítica de datos e inteligencia artificial generativa para la gestión de compras e inventarios de mipymes de comidas rápidas en Sincelejo.
 
 ## Stack tecnológico
