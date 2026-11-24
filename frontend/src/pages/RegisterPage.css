@@ -1,3 +1,4 @@
+
 .register-page {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
@@ -5,8 +6,9 @@
   margin-inline: auto;
   border: 1px solid var(--border);
   border-radius: 1.5rem;
-  background: #fff;
-  box-shadow: 0 20px 56px #103a3214;
+  background: var(--white);
+  box-shadow: 0 20px 56px rgba(38, 50, 56, 0.09);
+  overflow: hidden;
 }
 
 .register-intro {
@@ -15,18 +17,17 @@
   justify-content: space-between;
   gap: 4rem;
   padding: clamp(1.5rem, 5vw, 3.25rem);
-  border-radius: 1.45rem 0 0 1.45rem;
   background:
-    radial-gradient(ellipse at 100% 0%, #28785a, transparent 68%),
-    var(--forest);
-  color: #fff;
+    radial-gradient(ellipse at 100% 0%, rgba(168, 237, 234, 0.8), transparent 68%),
+    var(--yellow-soft);
+  color: var(--forest);
 }
 
 .register-wordmark {
   width: fit-content;
   padding-bottom: 0.55rem;
-  border-bottom: 2px solid #a6e4c2;
-  color: var(--mint);
+  border-bottom: 2px solid var(--green);
+  color: var(--forest);
   font-weight: 800;
   letter-spacing: 0.16em;
 }
@@ -47,12 +48,13 @@
 
 .register-intro p {
   max-width: 28ch;
-  color: var(--mint);
+  color: var(--muted);
 }
 
 .register-panel {
   min-width: 0;
   padding: clamp(1.5rem, 5vw, 3rem);
+  background: var(--white);
 }
 
 .register-panel h1 {
@@ -90,16 +92,19 @@
   min-width: 0;
   min-height: 2.85rem;
   padding: 0.65rem 0.8rem;
-  border: 1px solid #8ba69a;
+  border: 1px solid var(--border);
   border-radius: 0.65rem;
-  background: #f7faf8;
-  color: inherit;
+  background: #fffdf8;
+  color: var(--forest);
   font: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .register-field input:focus {
   border-color: var(--green);
-  background: #fff;
+  background: var(--white);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(249, 168, 38, 0.18);
 }
 
 .register-password {
@@ -113,7 +118,7 @@
   padding: 0 0.2rem;
   border: 0;
   background: transparent;
-  color: var(--green);
+  color: #9A6500;
   font: inherit;
   font-size: 0.875rem;
   font-weight: 700;
@@ -136,6 +141,7 @@
 
 .register-feedback:not(:empty) {
   padding: 0.75rem;
+  border: 1px solid rgba(38, 50, 56, 0.08);
   border-radius: 0.65rem;
   background: var(--mint);
 }
@@ -147,7 +153,6 @@
 
   .register-intro {
     gap: 1.25rem;
-    border-radius: 1.45rem 1.45rem 0 0;
   }
 
   .register-intro h2 {

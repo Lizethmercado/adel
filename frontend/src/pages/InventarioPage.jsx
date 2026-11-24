@@ -1,4 +1,6 @@
+
 import { useEffect, useState } from 'react';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { Link, Navigate, useNavigate } from 'react-router';
 import { listarInsumos } from '../services/insumos.js';
 import {
@@ -30,6 +32,16 @@ export default function InventarioPage() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
   const [consulta, setConsulta] = useState(0);
+
+  const totalInsumos = insumos.length;
+
+  const insumosDisponibles = insumos.filter(
+    (insumo) => estadoDelInsumo(insumo).clase === 'disponible'
+  ).length;
+
+  const insumosPorReponer = insumos.filter(
+    (insumo) => estadoDelInsumo(insumo).clase !== 'disponible'
+  ).length;
 
   useEffect(() => {
     if (!token) {
@@ -82,20 +94,58 @@ export default function InventarioPage() {
   return (
     <section className="inventario-page" aria-labelledby="inventario-title">
       <header className="inventario-header">
-        <div>
+        <div className="inventario-header__contenido">
+          <span className="inventario-eyebrow">GESTIÓN DE INSUMOS</span>
           <h1 id="inventario-title">Inventario</h1>
-          <p>Consulta las existencias de tu negocio y revisa qué insumos debes reponer.</p>
+          <p>
+            Consulta las existencias de tu negocio y revisa qué insumos debes reponer.
+          </p>
         </div>
 
         <button
-          className="action"
+          className="action inventario-actualizar"
           type="button"
           onClick={actualizar}
           disabled={cargando}
         >
-          {cargando ? 'Cargando…' : 'Actualizar'}
+          <RefreshCw size={17} aria-hidden="true" />
+          {cargando ? 'Actualizando…' : 'Actualizar'}
         </button>
       </header>
+
+      {!cargando && !error && insumos.length > 0 && (
+        <section className="inventario-resumen" aria-label="Resumen del inventario">
+          <article className="inventario-indicador">
+            <div className="inventario-indicador__icono inventario-indicador__icono--total">
+              <img src="/imagenes/inventario.svg" alt="" aria-hidden="true" />
+            </div>
+            <div>
+              <span>Total de insumos</span>
+              <strong>{totalInsumos}</strong>
+            </div>
+          </article>
+
+          <article className="inventario-indicador">
+            <div className="inventario-indicador__icono inventario-indicador__icono--disponible">
+              <img src="/imagenes/disponibles.svg" alt="" aria-hidden="true" />
+            </div>
+            <div>
+              <span>Disponibles</span>
+              <strong>{insumosDisponibles}</strong>
+            </div>
+          </article>
+
+          <article className="inventario-indicador">
+            <div className="inventario-indicador__icono inventario-indicador__icono--reponer">
+              <AlertTriangle size={21} aria-hidden="true" />
+            </div>
+            <div>
+              <span>Por reponer</span>
+              <strong>{insumosPorReponer}</strong>
+            </div>
+          </article>
+        </section>
+      )}
 
       {cargando && (
         <p className="inventario-panel" role="status">
