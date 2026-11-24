@@ -96,8 +96,9 @@ Al iniciar, el backend aplica las migraciones de Prisma. Los datos de PostgreSQL
 
 ## Tablero de trabajo
 
-El avance del Sprint 1 se gestiona en un GitHub Project público: [Sprint 1 - ADEL](https://github.com/users/XimenaBarrera1/projects/1).
-El avance del Sprint 2 se gestiona en un GitHub Project público: [Sprint 2 - ADEL](https://github.com/users/XimenaBarrera1/projects/2).
+1. El avance del Sprint 1 se gestiona en un GitHub Project público: [Sprint 1 - ADEL](https://github.com/users/XimenaBarrera1/projects/1).
+2. El avance del Sprint 2 se gestiona en un GitHub Project público: [Sprint 2 - ADEL](https://github.com/users/XimenaBarrera1/projects/2).
+3. El avance del Sprint 3 se gestiona en un GitHub Project público: [Sprint 3 - ADEL](https://github.com/users/XimenaBarrera1/projects/3).
 
 ## Licencia
 
